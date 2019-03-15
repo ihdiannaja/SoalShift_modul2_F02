@@ -10,7 +10,6 @@ int main() {
   int fd[2];
 if(pipe(fd) < 0) exit(1);
   child_id1 = fork();
-	char coba[10000];
   if (child_id1 == 0) {
     char *argv[5] = {"unzip", "/home/rye/modul2/campur2.zip", "-d", "/home/rye/modul2/", NULL};
     execv("/usr/bin/unzip", argv);
@@ -35,7 +34,6 @@ if(pipe(fd) < 0) exit(1);
 			dup2(fileopen, STDOUT_FILENO);
 			char *argv[3] = {"grep", ".txt$", NULL};
 			execv("/bin/grep", argv);
-			close(fd[1]);
     	}
   }
 }
