@@ -230,7 +230,68 @@ Buatlah program C yang dapat :
 * Pastikan file daftar.txt dapat diakses dari text editor
 
 #### Jawaban :
+```
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+int main() {
+  pid_t child_id1, child_id2;
+  int status;
+  int fd[2];
+```
+* Deklarasi variabel yang diperlukan.
+```
+if(pipe(fd) < 0) exit(1);
+  child_id1 = fork();
+	char coba[10000];
+  if (child_id1 == 0) {
+    char *argv[5] = {"unzip", "/home/rye/modul2/campur2.zip", "-d", "/home/rye/modul2/", NULL};
+    execv("/usr/bin/unzip", argv);
+  }
+```
+* `(pipe(fd) < 0) exit(1)` digunakan untuk melakukan pengecekan apakah pipe dapat berfungsi atau tidak.
+* Melakukan proses child yang berfungsi untuk meng unzip folder campur2.zip dalam folder /home/rye/modul2/ ke dalam folder /home/rye/modul2/.
 
+```
+  else {
+	  while ((wait(&status)) > 0);
+	  child_id2 = fork();
+  	if (child_id2 == 0) {
+		close(fd[0]);
+    		dup2(fd[1], STDOUT_FILENO);
+    		char *argv[3] = {"ls", "/home/rye/modul2/campur2/", NULL};
+   		 execv("/bin/ls", argv);
+  	}
+```
+* melakukan perulangan apakah proses child sebelumya sudah selesai atau belum.
+* melakukan proses child yang menampilkan isi <ls> dari folder campur2.
+* hasil dari ls tersebut yang harusnya ditampilkan di console dialihkan menggunakan STDOUT_FILENO dan disimpan dalam fd.
+```
+	else {
+      		while((wait(&status)) > 0);
+			close(fd[1]);
+			dup2(fd[0], STDIN_FILENO);
+			close(fd[0]);
+			int fileopen = open("/home/rye/modul2/daftar.txt",O_WRONLY | O_CREAT);
+			dup2(fileopen, STDOUT_FILENO);
+			char *argv[3] = {"grep", ".txt$", NULL};
+			execv("/bin/grep", argv);
+			close(fd[1]);
+    	}
+  }
+}	
+```
+* melakukan perulangan untuk memastikan bahwa proses child sebelumnya sudah berakhir.
+* menutup fd[1].
+* membuka file daftar.txt yang bersifat read-only.
+* hasil ls dari proses sebelumnya dijadikan input di proses saat ini. sehingga digunakan STDIN_FILENO.
+* melakukan pencarian nama file yang berekstensi .txt pada hasil ls yang telah didapat.
+* file yang telah tersaring akan ditampilkan pada file daftar.txt.
+* file daftar.txt ditutup.
+* proses berakhir.
 
 ## Soal 4
 #### Pertanyaan :
@@ -348,3 +409,123 @@ Ket:
 Dilarang menggunakan crontab dan tidak memakai argumen ketika menjalankan program.
 
 #### Jawaban :
+##### 5a
+```
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <syslog.h>
+#include <string.h>
+#include <time.h>
+int main() {
+  pid_t pid, sid;
+
+  pid = fork();
+
+  if (pid < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if (pid > 0) {
+    exit(EXIT_SUCCESS);
+  }
+
+  umask(0);
+
+  sid = setsid();
+
+  if (sid < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if ((chdir("/")) < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
+
+```
+* menggunakan daemon.
+```
+  while(1) {
+ 	time_t jam = time(NULL);
+        struct tm *waktu = localtime(&jam);
+        char swaktu[256], swaktu1[256];
+        sprintf(swaktu, "%d:%d:%d-%d:%d",waktu->tm_mday,waktu->tm_mon+1,waktu->tm_year+1900,waktu->tm_hour,waktu->tm_min);
+	strcpy(swaktu1, "/home/rye/log/");
+	strcat(swaktu1,swaktu);
+        mkdir(swaktu1, 0777);
+        int bil = 1;
+```
+* melakukan while(true) untuk mendapatkan time saat ini yang disimpan pada variabel jam.
+* membuat variabel baru bernama waktu yang berisi waktu dari jam yang formatnya telah terpisah-pisah. sehingga kita bisa mendapatkan tiap format waktu (jam,menit,dst).
+* merubah tipe data integer ke dalam char dari variabel swaktu. dibuat dalam format tanggal:bulan:tahun:jam:menit.
+* mengcopy swaktu1 ke dalam folder /home/rye/log/.
+* menggabungkan nama file swaktu1 dengan swaktu yang disimpan dalam swaktu1.
+* membuat direktori dengan nama sesuai swaktu dan permission 777.
+* deklarasi variabel bil bertipe integer = 1.
+```
+        while(bil <= 30)
+        {
+                FILE *source, *target;
+                char c, nfile[256];
+                sprintf(nfile, "%s/log%d", swaktu1, bil);
+                strcat(nfile, ".log");
+                source = fopen("/var/log/syslog", "r");
+                target = fopen(nfile, "w");
+                while(fscanf(source, "%c", &c) != EOF)
+                        fprintf(target, "%c", c);
+                bil++;
+                fclose(source);
+                fclose(target);
+                sleep(60);
+        }
+  }
+
+  exit(EXIT_SUCCESS);
+}
+```
+* melakukan perulangan sebanyak 30 kali.
+* membuat variabel source dan target bertipe file, dan variabel c dan nfile bertipe char.
+* mengubah tipe data int menjadi string pada nfile.
+* menggabungkan nama nfile dengan .log .
+* mendeklarasikan source sebagai pembaca (scan) isi folder syslog.
+* mendeklarasikan target sebagai penulis (print) file dari folder syslog  ke folder nfile.
+* melakukan perulangan untuk membaca file dalam folder source ketika c != EOF.
+* jika memenuhi, maka file yang telah terbaca dicopy dalam folder target.
+* increment bil.
+* menutup file source dan target.
+* pause setiap 60 detik. sehingga dalam 1 jam didapatkan 30 log.
+
+##### 5b
+```
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <syslog.h>
+#include <string.h>
+#include <signal.h>
+int main() {
+	char pid_string[5];
+	FILE *perintah = popen("pidof soal5a","r");
+	fgets(pid_string,5,perintah);
+	pid_t pid = strtoul(pid_string,NULL,10);
+	kill(pid,SIGKILL);
+	pclose(perintah);
+}
+```
+* membuat variabel perintah bertipe file yang berisi pid dari proses yang berjalan pada proses 5a.
+* hasil pid yang didapatkan dari perintah disimpan pada pid_string.
+* membunuh proses dengan pid yang sesuai dengan pid_string.
+* menutup file perintah.
+* proses selesai.
