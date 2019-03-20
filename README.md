@@ -96,13 +96,16 @@ char *dot = strrchr(filename, '.');
 ```
 		strcpy(newdir, "/home/rye/modul2/gambar/");
 ```
-	*	Mengcopy direktori /home/rye/modul2/gambar/ ke dalam direktori newdir.
+*	Mengcopy direktori /home/rye/modul2/gambar/ ke dalam direktori newdir.
 ```
 		strcpy(olddir, "/home/rye/Pictures/modul2/");
 ```
 *	Mengcopy direktori /home/rye/Pictures/modul2/ ke dalam direktori olddir.
 ```
 		strcat(olddir,filename);
+```
+*	Menggabungkan nama olddir dan filename.
+```
 		char *namadepan = strtok(filename, ".");
 		strcat(namadepan, "_grey.");
 		strcat(namadepan, ext);
@@ -111,7 +114,6 @@ char *dot = strrchr(filename, '.');
 	}
     }  
 ```
-*	Menggabungkan nama olddir dan filename.
 *	Membuat variabel bertipe char bernama *namadepan yang berisi character setelah tanda titik pada string filename.
 *	Membagi namadepan yang dibatasi oleh “_grey.” .
 *	Membagi namadepan yang dibatasi oleh ext .
