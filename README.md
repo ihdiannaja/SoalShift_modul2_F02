@@ -445,19 +445,24 @@ Pada detik ke-10 terdapat file makan_sehat1.txt dan makan_sehat2.txt
 	  close(STDOUT_FILENO);
 	  close(STDERR_FILENO);
 ```
-* Pada bagian ini, menggunakan daemon.
+* Pada bagian ini, merupakan proses untuk membuat daemon.
+* Langkah pertama adalah menspawn proses menjadi induk dan anak dengan melakukan forking, kemudian membunuh proses induk. Proses induk yang mati akan menyebabkan sistem operasi mengira bahwa proses telah selesai.
+* Untuk menulis beberapa file (termasuk logs) yang dibuat oleh daemon, mode file harus diubah untuk memastikan bahwa file tersebut dapat ditulis dan dibaca secara benar. Pengubahan mode file menggunakan implementasi umask().
+* Child Process harus memiliki unik SID yang berasal dari kernel agar prosesnya dapat berjalan. Child Process menjadi Orphan Process pada system. Tipe pid_t juga digunakan untuk membuat SID baru untuk Child Process. Setsid() digunakan untuk pembuatan SID baru. Fungsi setsid() memiliki return tipe yang sama dengan fork().
+* Directori kerja yang aktif harus diubah ke suatu tempat yang telah pasti akan selalu ada. Pengubahan tempat direktori kerja dapat dilakukan dengan implementasi fungsi chdir(). Fungsi chdir() mengembalikan nilai -1 jika gagal.
+* Langkah terakhir dalam men-set daemon adalah menutup file desciptor standard dengan menggunakan STDIN, STDOUT, dan STDERR. Dikarenakan oleh daemon tidak menggunakan terminal, maka file desciptor dapat terus berulang dan berpotensi berbahaya bagi keamanan. Untuk mengatasi hal tersebut maka harus menggunakan fungsi close().
 ```
        int bil=1;
 	FILE *fp;
 	char file[256];
 ```
-* Membuat variabel bil bertipe int = 1.
-* Membuat variabel *fp bertipe file.
+* Membuat variabel bil bertipe int = 1. Variabel bil akan digunakan sebagai urutan penamaan file.
+* Membuat variabel * fp bertipe file.
 * Membuat variabel file bertipe char.
 ```
 	strcpy(file,"/home/rye/Documents/makanan/makan_enak.txt");
 ```
-* Mengcopy file makan_enak.txt dalam direktori /home/rye/Documents/makanan/ ke dalam variabel file yang bertipe file.
+* Mengcopy string /home/rye/Documents/makanan/makan_enak.txt ke dalam variabel file.
 ```
   while(1) {
 		struct stat makanenak;
@@ -466,12 +471,15 @@ Pada detik ke-10 terdapat file makan_sehat1.txt dan makan_sehat2.txt
 ```
 		stat(file,&makanenak);
 ```
-* Mengambil informasi dari makanenak menuju file.
+* Mengambil informasi dari file yang ditunjukkan oleh isi variabel file dan informasi tersebut disimpan pada struct stat makanenak.
 ```
 	if(difftime(time(NULL),makanenak.st_atime) <= 30){
 ```
-* Melakukan pengecekan apakah selisih waktu sekarang dengan waktu akses.
-* Jika <= 30, maka :
+* Fungsi `difftime` digunakan untuk mencari selisih waktu antara waktu pada parameter pertama dengan waktu pada parameter kedua.
+* Fungsi time(NULL) digunakan untuk mendapatkan waktu saat program dijalankan.
+* `makanenak.st_atime` digunakan untuk mendapatkan waktu terakhir akses yang tersimpan pada struct stat makanenak.
+* Melakukan pengecekan selisih waktu sekarang dengan waktu akses.
+* Jika selisihnya <= 30, maka :
 ```
 		char nfile[256];
         	strcpy(nfile,"/home/rye/Documents/makanan/makan_sehat");
@@ -487,15 +495,15 @@ Pada detik ke-10 terdapat file makan_sehat1.txt dan makan_sehat2.txt
 ```
 		strcat(nfile, c);
 ```
-* Menggabungkan string nfile dengan c.
+* Menggabungkan string nfile dengan c dan disimpan pada variabel nfile. Sehingga variabel nfile sekarang berisi string /home/rye/Documents/makanan/makan_sehat[bil].
 ```
 		strcat(nfile, ".txt");
 ```
-* Menambahkan string .txt pada nfile.
+* Menggabungkan string nfile dengan .txt dan disimpan pada variabel nfile. Sehingga variabel nfile sekarang berisi string /home/rye/Documents/makanan/makan_sehat[bil].txt.
 ```
 		fp = fopen(nfile, "w");
 ```
-* Membuka file sesuai dengan path nfile.
+* Membuka file sesuai dengan path nfile dengan mode write. Fungsi ini dilakukan untuk mencreate file sesuai dengan path pada nfile.
 ```
 		fclose(fp);
 		bil++;
@@ -509,8 +517,14 @@ sleep(5);
   exit(EXIT_SUCCESS);
   }
 ```
-* Melakukan pause setiap 5 detik.
+* Melakukan pause setiap 5 detik. Sehinggga program akan melakukan pengecekan (berjalan) setiap 5 detik.
 * Mengakhiri program.
+*	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
+*	Program dijalankan dengan menggunakan perintah `./nama`
+*	Berikut adalah screenshot program
+*	Hasil setelah program berjalan
+*	Untuk mengakiri program dapat dilakukan perintah `kill [PID]`
+*	Untuk mendapatkan PID dapat dilakukan perintah `ps -e | grep nama`
 
 ## Soal 5
 #### Pertanyaan :
@@ -567,16 +581,23 @@ int main() {
   close(STDERR_FILENO);
 
 ```
-* menggunakan daemon.
+* Pada bagian ini, merupakan proses untuk membuat daemon.
+* Langkah pertama adalah menspawn proses menjadi induk dan anak dengan melakukan forking, kemudian membunuh proses induk. Proses induk yang mati akan menyebabkan sistem operasi mengira bahwa proses telah selesai.
+* Untuk menulis beberapa file (termasuk logs) yang dibuat oleh daemon, mode file harus diubah untuk memastikan bahwa file tersebut dapat ditulis dan dibaca secara benar. Pengubahan mode file menggunakan implementasi umask().
+* Child Process harus memiliki unik SID yang berasal dari kernel agar prosesnya dapat berjalan. Child Process menjadi Orphan Process pada system. Tipe pid_t juga digunakan untuk membuat SID baru untuk Child Process. Setsid() digunakan untuk pembuatan SID baru. Fungsi setsid() memiliki return tipe yang sama dengan fork().
+* Directori kerja yang aktif harus diubah ke suatu tempat yang telah pasti akan selalu ada. Pengubahan tempat direktori kerja dapat dilakukan dengan implementasi fungsi chdir(). Fungsi chdir() mengembalikan nilai -1 jika gagal.
+* Langkah terakhir dalam men-set daemon adalah menutup file desciptor standard dengan menggunakan STDIN, STDOUT, dan STDERR. Dikarenakan oleh daemon tidak menggunakan terminal, maka file desciptor dapat terus berulang dan berpotensi berbahaya bagi keamanan. Untuk mengatasi hal tersebut maka harus menggunakan fungsi close().
 ```
   while(1) {
  	time_t jam = time(NULL);
 ```
-* melakukan while(true) untuk mendapatkan time saat ini yang disimpan pada variabel jam.
+* Selama daemon berjalan, dilakukan :
+* deklarasi variabel jam yang bertipe time_t.
+* Fungsi `time(NULL)` digunakan untuk mendapatkan time saat ini yang disimpan pada variabel jam.
 ```
         struct tm *waktu = localtime(&jam);
 ```
-* membuat variabel baru bernama waktu yang berisi waktu dari jam yang formatnya telah terpisah-pisah. sehingga kita bisa mendapatkan tiap format waktu (jam,menit,dst).
+* membuat struct tm baru bernama waktu yang berisi waktu dari jam yang formatnya telah terpisah-pisah. sehingga kita bisa mendapatkan tiap format waktu (jam,menit,dst).
 ```
         char swaktu[256], swaktu1[256];
 ```
@@ -584,15 +605,18 @@ int main() {
 ```
         sprintf(swaktu, "%d:%d:%d-%d:%d",waktu->tm_mday,waktu->tm_mon+1,waktu->tm_year+1900,waktu->tm_hour,waktu->tm_min);
 ```
-* merubah tipe data integer ke dalam char dari variabel swaktu. dibuat dalam format tanggal:bulan:tahun:jam:menit.
+* merubah tipe data integer ke dalam char dari variabel swaktu. dibuat dalam format tanggal:bulan:tahun:jam:menit. 
+* berikut adalah tabel untuk struct tm
+* tm_mon ditambah satu karena tm_mon dimulai dari 0 (Januari adalah bulan ke 0)
+* tm_year ditambah 1900 karena tm_year dimulai dari 1900 (1900 adalah tahun ke 0)
 ```
 	strcpy(swaktu1, "/home/rye/log/");
 ```
-* mengcopy swaktu1 ke dalam folder /home/rye/log/.
+* mengcopy string /home/rye/log/ ke dalam variabel swaktu1.
 ```
 	strcat(swaktu1,swaktu);
 ```
-* menggabungkan nama file swaktu1 dengan swaktu yang disimpan dalam swaktu1.
+* menggabungkan nama file swaktu1 dengan swaktu yang disimpan dalam swaktu1. Sehingga variabel swaktu1 berisi string /home/rye/log/tanggal:bulan:tahun:jam:menit.
 ```
         mkdir(swaktu1, 0777);
 ```
@@ -600,25 +624,25 @@ int main() {
 ```
         int bil = 1;
 ```
-* deklarasi variabel bil bertipe integer = 1.
+* deklarasi variabel bil bertipe integer = 1. Variabel bil digunakan untuk urutan penamaan file.
 ```
         while(bil <= 30){
 ```
 * melakukan perulangan sebanyak 30 kali.
 ```
-                FILE *source, *target;```
+                FILE *source, *target;
 ```
-* membuat variabel source dan target bertipe file, dan variabel c dan nfile bertipe char.
+* membuat variabel source dan target bertipe file.
 ```
                 char c, nfile[256];
                 sprintf(nfile, "%s/log%d", swaktu1, bil);
 ```
 * membuat variabel bernama c dan nfile bertipe char.
-* mengubah tipe data int menjadi string pada nfile.
+* mengubah variabel bil yang mempunyai tipe data int menjadi string sekaligus menggabungkannya dengan variabel swaktu1 dan disimpan pada variabel nfile. Sehingga variabel nfile sekarang berisi string /home/rye/log/tanggal:bulan:tahun:jam:menit/log[bil]
 ```
                 strcat(nfile, ".log");
 ```
-* menggabungkan nama nfile dengan .log .
+* menggabungkan string pada variabel nfile dengan .log dan disimpan pada variabel nfile. Sehingga variabel nfile sekarang berisi string /home/rye/log/tanggal:bulan:tahun:jam:menit/log[bil].log
 ```
                 source = fopen("/var/log/syslog", "r");
 ```
@@ -631,12 +655,12 @@ int main() {
                 while(fscanf(source, "%c", &c) != EOF)
                         fprintf(target, "%c", c);
 ```
-* melakukan perulangan untuk membaca file dalam folder source ketika c != EOF.
+* melakukan perulangan untuk membaca file dalam folder source ketika c != EOF (akhir file).
 * jika memenuhi, maka file yang telah terbaca dicopy dalam folder target.
 ```
                 bil++;
 ```
-* increment bil.
+* increment variabel bil.
 ```
                 fclose(source);
                 fclose(target);
@@ -648,7 +672,11 @@ int main() {
 }
 ```
 * menutup file source dan target.
-* pause setiap 60 detik. sehingga dalam 1 jam didapatkan 30 log.
+* pause setiap 60 detik. sehingga dalam 30 menit didapatkan 30 file log.
+*	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
+*	Program dijalankan dengan menggunakan perintah `./nama`
+*	Berikut adalah screenshot program
+*	Hasil setelah program berjalan
 
 ##### 5b
 ```
@@ -681,3 +709,6 @@ int main() {
 * membunuh proses dengan pid yang sesuai dengan pid_string.
 * menutup file perintah.
 * proses selesai.
+*	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
+*	Program dijalankan dengan menggunakan perintah `./nama`
+*	Hasil setelah program berjalan
