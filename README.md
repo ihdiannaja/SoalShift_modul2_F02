@@ -1,5 +1,9 @@
 # Soal Shift Modul 2 F02
-Pertanyaan, Jawaban dan Penjelasan Praktikum Modul 1 Sistem Operasi 2019.
+Pertanyaan, Jawaban dan Penjelasan Praktikum Modul 2 Sistem Operasi 2019.
+
+Oleh :
+* Wasilatul Dewi Ningrum (05111740000004)
+* Ihdiannaja (05111740007005)
 
 ## Soal 1
 #### Pertanyaan :
@@ -49,46 +53,52 @@ int main() {
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
 ```
-* Pada bagian ini, menggunakan daemon.
+* Pada bagian ini, merupakan proses untuk membuat daemon.
+* Langkah pertama adalah menspawn proses menjadi induk dan anak dengan melakukan forking, kemudian membunuh proses induk. Proses induk yang mati akan menyebabkan sistem operasi mengira bahwa proses telah selesai.
+* Untuk menulis beberapa file (termasuk logs) yang dibuat oleh daemon, mode file harus diubah untuk memastikan bahwa file tersebut dapat ditulis dan dibaca secara benar. Pengubahan mode file menggunakan implementasi umask().
+* Child Process harus memiliki unik SID yang berasal dari kernel agar prosesnya dapat berjalan. Child Process menjadi Orphan Process pada system. Tipe pid_t juga digunakan untuk membuat SID baru untuk Child Process. Setsid() digunakan untuk pembuatan SID baru. Fungsi setsid() memiliki return tipe yang sama dengan fork().
+* Directori kerja yang aktif harus diubah ke suatu tempat yang telah pasti akan selalu ada. Pengubahan tempat direktori kerja dapat dilakukan dengan implementasi fungsi chdir(). Fungsi chdir() mengembalikan nilai -1 jika gagal.
+* Langkah terakhir dalam men-set daemon adalah menutup file desciptor standard dengan menggunakan STDIN, STDOUT, dan STDERR. Dikarenakan oleh daemon tidak menggunakan terminal, maka file desciptor dapat terus berulang dan berpotensi berbahaya bagi keamanan. Untuk mengatasi hal tersebut maka harus menggunakan fungsi close().
 ```
   while(1) {
     DIR *d;
 ```
-* Mendeklarasikan direktori dengan nama d.
+* Daemon bekerja dalam jangka waktu tertentu, sehingga diperlukan sebuah looping.
+* `DIR *d` Mendeklarasikan direktori dengan nama d.
 ```
 struct dirent *dir;
 ```
-* `struct dirent` * dir digunakan untuk memberikan informasi mengenai isi dalam direktori bernama dir.
+* `struct dirent * dir` digunakan untuk memberikan informasi mengenai isi dalam direktori bernama dir.
 ```
 d = opendir("/home/rye/Pictures/modul2/");
 ```
-* Mendeklarasikan direktori d = direktori /home/rye/Pictures/modul2/.
+* Membuka direktori d yang merupakan direktori /home/rye/Pictures/modul2/.
 ```
     while((dir = readdir(d)) != NULL)
     {
 ```
-* Perulangan ini untuk membaca seluruh isi dalam direktori dir yang sebelumnya telah dideklarasikan.
+* Perulangan ini untuk membaca seluruh isi dalam direktori dir yang sebelumnya telah dibuka.
 ```
 char *filename = dir->d_name;
 ```
-* Jika memenuhi ketentuan perulangan tersebut, maka kita membuat variabel bertipe char dengan nama * filename yang dideklarasikan = dir->d_name (nama tiap file dalam direktori dir).
+* Jika memenuhi ketentuan perulangan tersebut (direktori tidak null atau memiliki isi), maka kita membuat variabel bertipe char dengan nama * filename yang dideklarasikan = dir->d_name. `dir->d_name` digunakan untuk mendapatkan nama file dalam direktori dir.
 ```
 char *dot = strrchr(filename, '.');
 ```
-* Membuat variabel bertipe char bernama * dot yang dideklarasikan untuk membaca posisi terakhir dalam filename setelah tanda titik “.” <dot> .
+* Membuat variabel bertipe char bernama * dot yang dideklarasikan untuk mendapatkan string dalam filename setelah tanda titik “.” <dot> (tanda titik juga akan tertampung dalam variabel dot) .
 ```
 	if(!dot)
      	continue;
 ```
-*	Jika bukan tanda titik, maka continue.
+*	Jika ternyata tidak terdapat tanda titik pada variabel filename, maka lanjutkan proses.
 ```
 	      char *ext = strdup(dot + 1);
 ```
-*	Mendeklarasikan *ext sebagai duplikasi dari (dot + 1), yang berarti *ext membaca string setelah tanda titik pada filename.
+*	Mendeklarasikan variabel *ext sebagai duplikasi dari (dot + 1), yang berarti *ext membaca string mulai posisi ke 1 pada variabel dot. sehingga variabel ext akan menampung string setelah tanda titik (tanda titik terletak pada array ke 0 pada variabel dot.
 ```
 	if(strcmp(ext, "png") == 0){
 ```
-*	Jika *ext = png, maka :
+*	Jika variabel *ext berisi string png, maka :
 ```
 		char newdir[256], olddir[256];
 ```
@@ -96,15 +106,15 @@ char *dot = strrchr(filename, '.');
 ```
 		strcpy(newdir, "/home/rye/modul2/gambar/");
 ```
-*	Mengcopy direktori /home/rye/modul2/gambar/ ke dalam direktori newdir.
+*	Mengisi variabel newdir dengan string /home/rye/modul2/gambar/.
 ```
 		strcpy(olddir, "/home/rye/Pictures/modul2/");
 ```
-*	Mengcopy direktori /home/rye/Pictures/modul2/ ke dalam direktori olddir.
+*	Mengisi variabel olddir dengan string /home/rye/Pictures/modul2/.
 ```
 		strcat(olddir,filename);
 ```
-*	Menggabungkan nama olddir dan filename.
+*	Menggabungkan string pada variabel olddir dan filename dan disimpan pada variabel olddir. sehingga variabel olddir sekarang berisi string `/home/rye/Pictures/modul2/nama_file`
 ```
 		char *namadepan = strtok(filename, ".");
 ```
@@ -112,21 +122,21 @@ char *dot = strrchr(filename, '.');
 ```
 		strcat(namadepan, "_grey.");
 ```
-*	Membagi namadepan yang dibatasi oleh “_grey.” .
+*	Menggabungkan string pada variabel namadepan dengan “_grey.” dan disimpan pada variabel namadepan. Sehingga variabel namadepan sekarang berisi string `nama_file_grey.`
 ```
 		strcat(namadepan, ext);
 ```
-*	Membagi namadepan yang dibatasi oleh ext .
+*	Menggabungkan string pada variabel namadepan dengan string pada variabel ext dan disimpan pada variabel namadepan. Sehingga variabel namadepan sekarang berisi string `nama_file_grey.png`
 ```
 		strcat(newdir, namadepan);
 ```
-*	Membagi newdir yang dibatasi oleh namadepan .
+*	Menggabungkan string pada variabel newdir dengan string pada variabel namadepan dan disimpan pada variabel newdir. Sehingga variabel newdir sekarang berisi string `/home/rye/modul2/gambar/nama_file_grey.png`
 ```	
 		rename(olddir, newdir);
 	}
     }  
 ```
-*	Mengubah nama olddir menjadi newdir.
+*	Mengubah nama file dari olddir menjadi newdir.
 ```
     closedir(d);
     sleep(5);
@@ -137,6 +147,13 @@ char *dot = strrchr(filename, '.');
 *	Menutup direktori d.
 *	Melakukan pause pada program setiap 5 detik.
 *	Mengakhiri / EXIT program.
+*	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
+*	Program dijalankan dengan menggunakan perintah `./nama`
+*	Berikut adalah screenshot program
+*	File pada folder asal
+*	Hasil setelah program berjalan
+*	Untuk mengakiri program dapat dilakukan perintah `kill [PID]`
+*	Untuk mendapatkan PID dapat dilakukan perintah `ps -e | grep nama`
 
 ## Soal 2
 #### Pertanyaan :
@@ -200,11 +217,16 @@ int main() {
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
 ```
-*	Pada bagian ini, menggunakan daemon.
+* Pada bagian ini, merupakan proses untuk membuat daemon.
+* Langkah pertama adalah menspawn proses menjadi induk dan anak dengan melakukan forking, kemudian membunuh proses induk. Proses induk yang mati akan menyebabkan sistem operasi mengira bahwa proses telah selesai.
+* Untuk menulis beberapa file (termasuk logs) yang dibuat oleh daemon, mode file harus diubah untuk memastikan bahwa file tersebut dapat ditulis dan dibaca secara benar. Pengubahan mode file menggunakan implementasi umask().
+* Child Process harus memiliki unik SID yang berasal dari kernel agar prosesnya dapat berjalan. Child Process menjadi Orphan Process pada system. Tipe pid_t juga digunakan untuk membuat SID baru untuk Child Process. Setsid() digunakan untuk pembuatan SID baru. Fungsi setsid() memiliki return tipe yang sama dengan fork().
+* Directori kerja yang aktif harus diubah ke suatu tempat yang telah pasti akan selalu ada. Pengubahan tempat direktori kerja dapat dilakukan dengan implementasi fungsi chdir(). Fungsi chdir() mengembalikan nilai -1 jika gagal.
+* Langkah terakhir dalam men-set daemon adalah menutup file desciptor standard dengan menggunakan STDIN, STDOUT, dan STDERR. Dikarenakan oleh daemon tidak menggunakan terminal, maka file desciptor dapat terus berulang dan berpotensi berbahaya bagi keamanan. Untuk mengatasi hal tersebut maka harus menggunakan fungsi close().
 ```
   char file[256] = "/home/rye/modul2/hatiku/elen.ku";
 ```
-*	Deklarasi variabel bertipe char bernama file yang dideklarasikan = file elen.ku pada direktori "/home/rye/modul2/hatiku/.
+*	Deklarasi variabel bertipe char bernama file yang dideklarasikan = file elen.ku pada direktori /home/rye/modul2/hatiku/.
 ```
   while(1) {
 ```
@@ -212,7 +234,7 @@ int main() {
 ```
 	if (cfileexists(file)){
 ```
-*	Melakukan pengecekan apakah file sudah dibuat atau belum.
+*	Melakukan pengecekan apakah terdapat file seperti pada variabel file.
 ```
 	char mode[] = "0777";
 ```
@@ -233,39 +255,47 @@ int main() {
 ```
 	stat(file, &elenku); 
 ```
-*	Mengambil informasi dari elenku menuju file.
+*	Mengambil informasi dari file yang pathnya ditunjukkan oleh variabel file. Informasi tersebut disimpan pada struct stat elenku.
 ```
 	struct passwd *user = getpwuid(elenku.st_uid);
 ```
-*	Membuat struct passwd bernama *user yang berisi user id dari file elenku.
+*	Membuat struct passwd bernama * user yang berisi user id dari file elenku. Struct stat menyimpan informasi mengenai user id. Namun kita perlu tidak hanya user id melainkan juga owner sehingga user id disimpan pada struct passwd. Untuk dapat menggunakan struct ini diperlukan include pwd.h.
 ```
 	struct group  *group = getgrgid(elenku.st_gid);
 ```
-*	Membuat struct group bernama * group yang berisi group id dari file elenku.
+*	Membuat struct group bernama * group yang berisi group id dari file elenku. Struct stat menyimpan informasi mengenai group id. Namun kita perlu tidak hanya group id melainkan juga group name sehingga group id disimpan pada struct group. Untuk dapat menggunakan struct ini diperlukan include grrp.h.
 ```
 	int usercomp = strcmp (user->pw_name, "www-data");
 ```
 *	Deklarasi variabel usercomp dan grupcomp yang bertipe int.
-*	Usercomp digunakan untuk membandingkan apakah user->pw_name = www-data.
+*	Usercomp digunakan untuk membandingkan apakah owner milik id user file elen.ku adalah www-data.
 ```
 	int grupcomp = strcmp (group->gr_name, "www-data"); 
 ```
-*	grupcomp digunakan untuk membandingkan apakah group->gr_name = www-data.
+*	grupcomp digunakan untuk membandingkan apakah group name milik id group file elen.ku adalah www-data.
 ```
 	if (usercomp == 0 && grupcomp == 0 ){
 		remove (file);
 	}
   }
 ```
-*	Jika benar, maka file elenku dihapus.
+*	Jika benar, maka file elen.ku dihapus.
 ```
     sleep(3);
   }
   exit(EXIT_SUCCESS);
 }
 ```
-*	Melakukan pause pada program setiap 3 detik.
+*	Melakukan pause pada program setiap 3 detik. Sehingga pengecekan file elen.ku akan dilakukan setiap 3 detik.
 *	Mengakhiri proses.
+*	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
+*	Program dijalankan dengan menggunakan perintah `./nama`
+*	Untuk menguji coba program, kita membuat file elen.ku pada direktori /home/rye/modul2/hatiku/ dengan perintah `touch elen.ku`
+*	Untuk mengubah owner dan group name file elen.ku agar menjadi www-data dapat dilakukan dengan perintah `sudo chown www-data:www-data elen.ku`
+*	Berikut adalah screenshot program
+*	Hasil setelah program berjalan
+*	Untuk mengakiri program dapat dilakukan perintah `kill [PID]`
+*	Untuk mendapatkan PID dapat dilakukan perintah `ps -e | grep nama`
 
 ## Soal 3
 #### Pertanyaan :
@@ -292,23 +322,31 @@ int main() {
   int status;
   int fd[2];
 ```
-* Deklarasi variabel yang diperlukan.
+* Deklarasi variabel yang diperlukan. child_id1 dan child_id2 digunakan untuk menampung id dari proses anak. fd[2] digunakan sebagai file descriptor.
 ```
 if(pipe(fd) < 0) exit(1);
+```
+* Digunakan untuk melakukan pipe. Variabel fd merupakan file descriptor. fd[0] untuk proses read dan fd[1] untuk proses write. Jika pipe tidak berhasil dilakukan, program akan exit.
+```
   child_id1 = fork();
-	char coba[10000];
+```
+* Digunakan untuk membuat proses anak. PID yang dihasilkan dari proses fork() ditampung pada variabel child_id1.
+```
   if (child_id1 == 0) {
     char *argv[5] = {"unzip", "/home/rye/modul2/campur2.zip", "-d", "/home/rye/modul2/", NULL};
     execv("/usr/bin/unzip", argv);
   }
 ```
-* `(pipe(fd) < 0) exit(1)` digunakan untuk melakukan pengecekan apakah pipe dapat berfungsi atau tidak.
-* Melakukan proses child yang berfungsi untuk meng unzip folder campur2.zip dalam folder /home/rye/modul2/ ke dalam folder /home/rye/modul2/.
+* Dalam proses child dilakukan exec.
+* Proses yang dilakukan berfungsi untuk meng unzip folder campur2.zip dalam direktori /home/rye/modul2/. Hasil extract disimpan ke dalam direktori /home/rye/modul2/.
 
 ```
   else {
 	  while ((wait(&status)) > 0);
 	  child_id2 = fork();
+```
+* Setelah proses anak pertama telah selesai, maka dilakukan fork lagi untuk membuat proses anak kedua. PID dari hasil proses fork() tersebut disimpan pada variabel child_id2.
+```
   	if (child_id2 == 0) {
 		close(fd[0]);
     		dup2(fd[1], STDOUT_FILENO);
@@ -316,32 +354,44 @@ if(pipe(fd) < 0) exit(1);
    		 execv("/bin/ls", argv);
   	}
 ```
-* melakukan perulangan apakah proses child sebelumya sudah selesai atau belum.
-* melakukan proses child yang menampilkan isi <ls> dari folder campur2.
-* hasil dari ls tersebut yang harusnya ditampilkan di console dialihkan menggunakan STDOUT_FILENO dan disimpan dalam fd.
+* Dalam proses child dilakukan beberapa proses yaitu :
+* Menutup fd[0]. File descriptor untuk read ditutup karena file descriptor untuk write akan digunakan.
+* Fungsi `dup2(fd[1], STDOUT_FILENO)` digunakan untuk menduplikasi STDOUT_FILENO ke dalam file descriptor. Hal ini dikarenakan pada proses anak akan dilakukan exec `ls`. Hasil dari eksekusi `ls` akan ditampilkan pada console melalui STDOUT_FILENO. Dengan adanya fungsi `dup2(fd[1], STDOUT_FILENO)`, hasil eksekusi `ls` tidak akan muncul ke console, melainkan akan ditampung pada file descriptor.
+* Mengeksekusi `ls` untuk melihat isi file pada direktori `/home/rye/modul2/campur2/`.
 ```
 	else {
       		while((wait(&status)) > 0);
 			close(fd[1]);
+```
+* Setelah proses anak kedua selesai, maka akan kembali ke proses parent. Pada proses ini dilakukan :
+* melakukan perulangan untuk memastikan bahwa proses child sebelumnya sudah berakhir.
+* menutup fd[1]. File descriptor untuk read ditutup karena file descriptor untuk read akan digunakan.
+```
 			dup2(fd[0], STDIN_FILENO);
+```
+* Fungsi `dup2(fd[0], STDIN_FILENO)` digunakan untuk menduplikasi isi file descriptor ke STDIN_FILENO. Hal tersebut dilakukan karena pada proses ini akan dilakukan eksekusi `grep` yang membutuhkan hasil eksekusi `ls` yang ditampung pada file descriptor.
+```
 			close(fd[0]);
+```
+* Setelah proses read file descriptor dijalankan, fd[0] ditutup karena file descriptor untuk write akan digunakan kembali.
+```
 			int fileopen = open("/home/rye/modul2/daftar.txt",O_WRONLY | O_CREAT);
+```
+* membuka file daftar.txt dengan mode write only (O_WRONLY). Jika belum ada file daftar.txt pada direktori /home/rye/modul2/, maka file daftar.txt akan dibuat (O_CREAT).
+```
 			dup2(fileopen, STDOUT_FILENO);
 			char *argv[3] = {"grep", ".txt$", NULL};
 			execv("/bin/grep", argv);
-			close(fd[1]);
     	}
   }
 }	
 ```
-* melakukan perulangan untuk memastikan bahwa proses child sebelumnya sudah berakhir.
-* menutup fd[1].
-* membuka file daftar.txt yang bersifat read-only.
-* hasil ls dari proses sebelumnya dijadikan input di proses saat ini. sehingga digunakan STDIN_FILENO.
-* melakukan pencarian nama file yang berekstensi .txt pada hasil ls yang telah didapat.
-* file yang telah tersaring akan ditampilkan pada file daftar.txt.
-* file daftar.txt ditutup.
+* Fungsi `dup2(fileopen, STDOUT_FILENO)` digunakan untuk menduplikasi STDOUT_FILENO ke dalam file yang sedang dibuka yaitu daftar.txt. Hal ini dikarenakan pada proses parent akan dilakukan exec `grep` untuk mendapatkan daftar file yang berekstensi .txt. Hasil dari eksekusi `grep` akan ditampilkan pada console melalui STDOUT_FILENO. Dengan adanya fungsi `dup2(fileopen, STDOUT_FILENO)`, hasil eksekusi `grep` tidak akan muncul ke console, melainkan akan tertampung pada fileopen yaitu daftar.txt pada direktori /home/rye/modul2/.
 * proses berakhir.
+*	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
+*	Program dijalankan dengan menggunakan perintah `./nama`
+*	Berikut adalah screenshot program
+*	Hasil setelah program berjalan
 
 ## Soal 4
 #### Pertanyaan :
