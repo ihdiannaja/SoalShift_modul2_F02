@@ -521,6 +521,7 @@ sleep(5);
 * Mengakhiri program.
 *	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
 *	Program dijalankan dengan menggunakan perintah `./nama`
+*	Untuk melakukan uji coba pada program, dijalankan perintah `touch -a makan_enak.txt` untuk mengubah access time pada file makan_enak.txt
 *	Berikut adalah screenshot program
 *	Hasil setelah program berjalan
 *	Untuk mengakiri program dapat dilakukan perintah `kill [PID]`
