@@ -107,17 +107,25 @@ char *dot = strrchr(filename, '.');
 *	Menggabungkan nama olddir dan filename.
 ```
 		char *namadepan = strtok(filename, ".");
+```
+*	Membuat variabel bertipe char bernama *namadepan yang berisi character setelah tanda titik pada string filename.
+```
 		strcat(namadepan, "_grey.");
+```
+*	Membagi namadepan yang dibatasi oleh “_grey.” .
+```
 		strcat(namadepan, ext);
+```
+*	Membagi namadepan yang dibatasi oleh ext .
+```
 		strcat(newdir, namadepan);
+```
+*	Membagi newdir yang dibatasi oleh namadepan .
+```	
 		rename(olddir, newdir);
 	}
     }  
 ```
-*	Membuat variabel bertipe char bernama *namadepan yang berisi character setelah tanda titik pada string filename.
-*	Membagi namadepan yang dibatasi oleh “_grey.” .
-*	Membagi namadepan yang dibatasi oleh ext .
-*	Membagi newdir yang dibatasi oleh namadepan .
 *	Mengubah nama olddir menjadi newdir.
 ```
     closedir(d);
@@ -199,35 +207,56 @@ int main() {
 *	Deklarasi variabel bertipe char bernama file yang dideklarasikan = file elen.ku pada direktori "/home/rye/modul2/hatiku/.
 ```
   while(1) {
+```
+*	Melakukan perulangan while (true).
+```
 	if (cfileexists(file)){
+```
+*	Melakukan pengecekan apakah file sudah dibuat atau belum.
+```
 	char mode[] = "0777";
+```
+*	Membuat array of char bernama mode yang berisi “0777”.
+```
     	int i;
     	i = strtol(mode, 0, 8);
+```
+*	Membuat variabel i bertipe integer yang mengubah tipedata variabel mode dari string menjadi long integer.
+```
 	chmod (file,i);
+```
+*	Mengganti permission file dengan 0777.
+```
 	struct stat elenku;
+```
+*	Membuat struct stat yang berfungsi untuk menyimpan informasi tentang file elenku.
+```
 	stat(file, &elenku); 
+```
+*	Mengambil informasi dari elenku menuju file.
+```
 	struct passwd *user = getpwuid(elenku.st_uid);
+```
+*	Membuat struct passwd bernama *user yang berisi user id dari file elenku.
+```
 	struct group  *group = getgrgid(elenku.st_gid);
+```
+*	Membuat struct group bernama * group yang berisi group id dari file elenku.
+```
 	int usercomp = strcmp (user->pw_name, "www-data");
+```
+*	Deklarasi variabel usercomp dan grupcomp yang bertipe int.
+*	Usercomp digunakan untuk membandingkan apakah user->pw_name = www-data.
+```
 	int grupcomp = strcmp (group->gr_name, "www-data"); 
-
+```
+*	grupcomp digunakan untuk membandingkan apakah group->gr_name = www-data.
+```
 	if (usercomp == 0 && grupcomp == 0 ){
 		remove (file);
 	}
   }
 ```
-*	Melakukan perulangan while (true).
-*	Melakukan pengecekan apakah file sudah dibuat atau belum.
-*	Membuat array of char bernama mode yang berisi “0777”.
-*	Membuat variabel i bertipe integer yang mengubah tipedata variabel mode dari string menjadi long integer.
-*	Mengganti permission file dengan 0777.
-*	Membuat struct stat yang berfungsi untuk menyimpan informasi tentang file elenku.
-*	Mengambil informasi dari elenku menuju file.
-*	Membuat struct passwd bernama *user yang berisi user id dari file elenku.
-*	Membuat strust group bernama *group yang berisi group id dari file elenku.
-*	Deklarasi variabel usercomp dan grupcomp yang bertipe int.
-*	Usercomp digunakan untuk membandingkan apakah user->pw_name = www-data.
-*	grupcomp digunakan untuk membandingkan apakah group->gr_name = www-data.
 *	Jika benar, maka file elenku dihapus.
 ```
     sleep(3);
@@ -371,41 +400,57 @@ Pada detik ke-10 terdapat file makan_sehat1.txt dan makan_sehat2.txt
        int bil=1;
 	FILE *fp;
 	char file[256];
-	strcpy(file,"/home/rye/Documents/makanan/makan_enak.txt");
 ```
 * Membuat variabel bil bertipe int = 1.
 * Membuat variabel *fp bertipe file.
 * Membuat variabel file bertipe char.
+```
+	strcpy(file,"/home/rye/Documents/makanan/makan_enak.txt");
+```
 * Mengcopy file makan_enak.txt dalam direktori /home/rye/Documents/makanan/ ke dalam variabel file yang bertipe file.
 ```
   while(1) {
 		struct stat makanenak;
-		stat(file,&makanenak);
 ```
 * Membuat struct stat bernama makanenak.
+```
+		stat(file,&makanenak);
+```
 * Mengambil informasi dari makanenak menuju file.
 ```
-	if(difftime(time(NULL),makanenak.st_atime) <= 30)
-{
+	if(difftime(time(NULL),makanenak.st_atime) <= 30){
+```
+* Melakukan pengecekan apakah selisih waktu sekarang dengan waktu akses.
+* Jika <= 30, maka :
+```
 		char nfile[256];
         	strcpy(nfile,"/home/rye/Documents/makanan/makan_sehat");
+```
+* Membuat variabel nfile bertipe char.
+* Mengcopy /home/rye/Documents/makanan/makan_sehat ke nfile.
+```
 		char c[256];
 		sprintf(c, "%d", bil);
+```
+* Membuat variabel c bertipe char.
+* Varibel bil yang tipe datanya integer diubah menjadi variabel c yang tipe datanya char.
+```
 		strcat(nfile, c);
+```
+* Menggabungkan string nfile dengan c.
+```
 		strcat(nfile, ".txt");
+```
+* Menambahkan string .txt pada nfile.
+```
 		fp = fopen(nfile, "w");
+```
+* Membuka file sesuai dengan path nfile.
+```
 		fclose(fp);
 		bil++;
 	}
 ```
-* Melakukan pengecekan apakah ..
-* Membuat variabel nfile bertipe char.
-* Mengcopy /home/rye/Documents/makanan/makan_sehat ke nfile.
-* Membuat variabel c bertipe char.
-* Varibel bil yang tipe datanya integer diubah menjadi variabel c yang tipe datanya char.
-* Menggabungkan string nfile dengan c.
-* Menambahkan string .txt pada nfile.
-* Membuka file sesuai dengan path nfile.
 * Menutup file fp yang telah dibuka.
 * Increment variabel bil.
 ```
@@ -476,33 +521,73 @@ int main() {
 ```
   while(1) {
  	time_t jam = time(NULL);
-        struct tm *waktu = localtime(&jam);
-        char swaktu[256], swaktu1[256];
-        sprintf(swaktu, "%d:%d:%d-%d:%d",waktu->tm_mday,waktu->tm_mon+1,waktu->tm_year+1900,waktu->tm_hour,waktu->tm_min);
-	strcpy(swaktu1, "/home/rye/log/");
-	strcat(swaktu1,swaktu);
-        mkdir(swaktu1, 0777);
-        int bil = 1;
 ```
 * melakukan while(true) untuk mendapatkan time saat ini yang disimpan pada variabel jam.
+```
+        struct tm *waktu = localtime(&jam);
+```
 * membuat variabel baru bernama waktu yang berisi waktu dari jam yang formatnya telah terpisah-pisah. sehingga kita bisa mendapatkan tiap format waktu (jam,menit,dst).
+```
+        char swaktu[256], swaktu1[256];
+```
+* Membuat variabel bertipe char bernama swaktu dan swaktu1.
+```
+        sprintf(swaktu, "%d:%d:%d-%d:%d",waktu->tm_mday,waktu->tm_mon+1,waktu->tm_year+1900,waktu->tm_hour,waktu->tm_min);
+```
 * merubah tipe data integer ke dalam char dari variabel swaktu. dibuat dalam format tanggal:bulan:tahun:jam:menit.
+```
+	strcpy(swaktu1, "/home/rye/log/");
+```
 * mengcopy swaktu1 ke dalam folder /home/rye/log/.
+```
+	strcat(swaktu1,swaktu);
+```
 * menggabungkan nama file swaktu1 dengan swaktu yang disimpan dalam swaktu1.
+```
+        mkdir(swaktu1, 0777);
+```
 * membuat direktori dengan nama sesuai swaktu dan permission 777.
+```
+        int bil = 1;
+```
 * deklarasi variabel bil bertipe integer = 1.
 ```
-        while(bil <= 30)
-        {
-                FILE *source, *target;
+        while(bil <= 30){
+```
+* melakukan perulangan sebanyak 30 kali.
+```
+                FILE *source, *target;```
+```
+* membuat variabel source dan target bertipe file, dan variabel c dan nfile bertipe char.
+```
                 char c, nfile[256];
                 sprintf(nfile, "%s/log%d", swaktu1, bil);
+```
+* membuat variabel bernama c dan nfile bertipe char.
+* mengubah tipe data int menjadi string pada nfile.
+```
                 strcat(nfile, ".log");
+```
+* menggabungkan nama nfile dengan .log .
+```
                 source = fopen("/var/log/syslog", "r");
+```
+* mendeklarasikan source sebagai pembaca (scan) isi folder syslog.
+```
                 target = fopen(nfile, "w");
+```
+* mendeklarasikan target sebagai penulis (print) file dari folder syslog  ke folder nfile.
+```
                 while(fscanf(source, "%c", &c) != EOF)
                         fprintf(target, "%c", c);
+```
+* melakukan perulangan untuk membaca file dalam folder source ketika c != EOF.
+* jika memenuhi, maka file yang telah terbaca dicopy dalam folder target.
+```
                 bil++;
+```
+* increment bil.
+```
                 fclose(source);
                 fclose(target);
                 sleep(60);
@@ -512,15 +597,6 @@ int main() {
   exit(EXIT_SUCCESS);
 }
 ```
-* melakukan perulangan sebanyak 30 kali.
-* membuat variabel source dan target bertipe file, dan variabel c dan nfile bertipe char.
-* mengubah tipe data int menjadi string pada nfile.
-* menggabungkan nama nfile dengan .log .
-* mendeklarasikan source sebagai pembaca (scan) isi folder syslog.
-* mendeklarasikan target sebagai penulis (print) file dari folder syslog  ke folder nfile.
-* melakukan perulangan untuk membaca file dalam folder source ketika c != EOF.
-* jika memenuhi, maka file yang telah terbaca dicopy dalam folder target.
-* increment bil.
 * menutup file source dan target.
 * pause setiap 60 detik. sehingga dalam 1 jam didapatkan 30 log.
 
@@ -538,15 +614,20 @@ int main() {
 #include <signal.h>
 int main() {
 	char pid_string[5];
+```
+* membuat variabel perintah bertipe file yang berisi pid dari proses yang berjalan pada proses 5a.
+```
 	FILE *perintah = popen("pidof soal5a","r");
 	fgets(pid_string,5,perintah);
 	pid_t pid = strtoul(pid_string,NULL,10);
+
+```
+* hasil pid yang didapatkan dari perintah disimpan pada pid_string.
+```
 	kill(pid,SIGKILL);
 	pclose(perintah);
 }
 ```
-* membuat variabel perintah bertipe file yang berisi pid dari proses yang berjalan pada proses 5a.
-* hasil pid yang didapatkan dari perintah disimpan pada pid_string.
 * membunuh proses dengan pid yang sesuai dengan pid_string.
 * menutup file perintah.
 * proses selesai.
