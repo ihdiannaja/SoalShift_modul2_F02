@@ -49,36 +49,59 @@ int main() {
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
 ```
-*	Pada bagian ini, menggunakan daemon.
+* Pada bagian ini, menggunakan daemon.
 ```
   while(1) {
     DIR *d;
-    struct dirent *dir;
-    d = opendir("/home/rye/Pictures/modul2/");
 ```
-*	Mendeklarasikan direktori dengan nama d.
-*	`struct dirent` * dir digunakan untuk memberikan informasi mengenai isi dalam direktori bernama dir.
-*	Mendeklarasikan direktori d = direktori /home/rye/Pictures/modul2/.
+* Mendeklarasikan direktori dengan nama d.
+```
+struct dirent *dir;
+```
+* `struct dirent` * dir digunakan untuk memberikan informasi mengenai isi dalam direktori bernama dir.
+```
+d = opendir("/home/rye/Pictures/modul2/");
+```
+* Mendeklarasikan direktori d = direktori /home/rye/Pictures/modul2/.
 ```
     while((dir = readdir(d)) != NULL)
     {
-	      char *filename = dir->d_name;
-	      char *dot = strrchr(filename, '.');
-	      if(!dot)
-		        continue;
-	      char *ext = strdup(dot + 1);
 ```
 * Perulangan ini untuk membaca seluruh isi dalam direktori dir yang sebelumnya telah dideklarasikan.
+```
+char *filename = dir->d_name;
+```
 * Jika memenuhi ketentuan perulangan tersebut, maka kita membuat variabel bertipe char dengan nama * filename yang dideklarasikan = dir->d_name (nama tiap file dalam direktori dir).
+```
+char *dot = strrchr(filename, '.');
+```
 * Membuat variabel bertipe char bernama * dot yang dideklarasikan untuk membaca posisi terakhir dalam filename setelah tanda titik “.” <dot> .
+```
+	if(!dot)
+     	continue;
+```
 *	Jika bukan tanda titik, maka continue.
+```
+	      char *ext = strdup(dot + 1);
+```
 *	Mendeklarasikan *ext sebagai duplikasi dari (dot + 1), yang berarti *ext membaca string setelah tanda titik pada filename.
 ```
-	if(strcmp(ext, "png") == 0)
-	{
+	if(strcmp(ext, "png") == 0){
+```
+*	Jika *ext = png, maka :
+```
 		char newdir[256], olddir[256];
+```
+*	Membuat variabel bertipe char yang bernama newdir dan olddir.
+```
 		strcpy(newdir, "/home/rye/modul2/gambar/");
+```
+	*	Mengcopy direktori /home/rye/modul2/gambar/ ke dalam direktori newdir.
+```
 		strcpy(olddir, "/home/rye/Pictures/modul2/");
+```
+*	Mengcopy direktori /home/rye/Pictures/modul2/ ke dalam direktori olddir.
+```
 		strcat(olddir,filename);
 		char *namadepan = strtok(filename, ".");
 		strcat(namadepan, "_grey.");
@@ -88,10 +111,6 @@ int main() {
 	}
     }  
 ```
-*	Jika *ext = png, maka :
-*	Membuat variabel bertipe char yang bernama newdir dan olddir.
-*	Mengcopy direktori /home/rye/modul2/gambar/ ke dalam direktori newdir.
-*	Mengcopy direktori /home/rye/Pictures/modul2/ ke dalam direktori olddir.
 *	Menggabungkan nama olddir dan filename.
 *	Membuat variabel bertipe char bernama *namadepan yang berisi character setelah tanda titik pada string filename.
 *	Membagi namadepan yang dibatasi oleh “_grey.” .
