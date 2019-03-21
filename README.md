@@ -149,11 +149,13 @@ char *dot = strrchr(filename, '.');
 *	Mengakhiri / EXIT program.
 *	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
 *	Program dijalankan dengan menggunakan perintah `./nama`
-*	Berikut adalah screenshot program
 *	File pada folder asal
+	<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal1/soal1%20belum%20grey.png" width="600">
 *	Hasil setelah program berjalan
+	<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal1/soal1%20sudah%20grey.png" width="600">
 *	Untuk mengakiri program dapat dilakukan perintah `kill [PID]`
 *	Untuk mendapatkan PID dapat dilakukan perintah `ps -e | grep nama`
+	<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal1/soal1.png" width="600">
 
 ## Soal 2
 #### Pertanyaan :
@@ -292,10 +294,9 @@ int main() {
 *	Program dijalankan dengan menggunakan perintah `./nama`
 *	Untuk menguji coba program, kita membuat file elen.ku pada direktori /home/rye/modul2/hatiku/ dengan perintah `touch elen.ku`
 *	Untuk mengubah owner dan group name file elen.ku agar menjadi www-data dapat dilakukan dengan perintah `sudo chown www-data:www-data elen.ku`
-*	Berikut adalah screenshot program
-*	Hasil setelah program berjalan
 *	Untuk mengakiri program dapat dilakukan perintah `kill [PID]`
 *	Untuk mendapatkan PID dapat dilakukan perintah `ps -e | grep nama`
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal2/soal2.png" width="600">
 
 ## Soal 3
 #### Pertanyaan :
@@ -390,8 +391,8 @@ if(pipe(fd) < 0) exit(1);
 * proses berakhir.
 *	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
 *	Program dijalankan dengan menggunakan perintah `./nama`
-*	Berikut adalah screenshot program
 *	Hasil setelah program berjalan
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal3/soal3%20list.png" width="600">
 
 ## Soal 4
 #### Pertanyaan :
@@ -522,10 +523,12 @@ sleep(5);
 *	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
 *	Program dijalankan dengan menggunakan perintah `./nama`
 *	Untuk melakukan uji coba pada program, dijalankan perintah `touch -a makan_enak.txt` untuk mengubah access time pada file makan_enak.txt
-*	Berikut adalah screenshot program
 *	Hasil setelah program berjalan
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal4/soal4%20pt%201.png" width="600">
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal4/soal4%20pt%202.png" width="600">
 *	Untuk mengakiri program dapat dilakukan perintah `kill [PID]`
 *	Untuk mendapatkan PID dapat dilakukan perintah `ps -e | grep nama`
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal4/soal4.png" width="600">
 
 ## Soal 5
 #### Pertanyaan :
@@ -608,6 +611,7 @@ int main() {
 ```
 * merubah tipe data integer ke dalam char dari variabel swaktu. dibuat dalam format tanggal:bulan:tahun:jam:menit. 
 * berikut adalah tabel untuk struct tm
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal5/soal5%20tm.jpg" width="600">
 * tm_mon ditambah satu karena tm_mon dimulai dari 0 (Januari adalah bulan ke 0)
 * tm_year ditambah 1900 karena tm_year dimulai dari 1900 (1900 adalah tahun ke 0)
 ```
@@ -676,8 +680,14 @@ int main() {
 * pause setiap 60 detik. sehingga dalam 30 menit didapatkan 30 file log.
 *	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
 *	Program dijalankan dengan menggunakan perintah `./nama`
-*	Berikut adalah screenshot program
 *	Hasil setelah program berjalan
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal5/soal5.png" width="600">
+*	Folder yang dibuat
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal5/soal5%20folder.png" width="600">
+*	Isi dari folder yang dibuat
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal5/soal5%20daftar%20log.png" width="600">
+*	Isi dari file .log yang dibuat
+<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal5/soal5%20log.png" width="600">
 
 ##### 5b
 ```
@@ -712,4 +722,3 @@ int main() {
 * proses selesai.
 *	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
 *	Program dijalankan dengan menggunakan perintah `./nama`
-*	Hasil setelah program berjalan
