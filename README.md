@@ -150,9 +150,13 @@ char *dot = strrchr(filename, '.');
 *	Program dicompile dengan menggunakan perintah `gcc -o nama nama_program.c`
 *	Program dijalankan dengan menggunakan perintah `./nama`
 *	File pada folder asal
+	
 	<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal1/soal1%20belum%20grey.png" width="600">
+	
 *	Hasil setelah program berjalan
+
 	<img src="https://github.com/ihdiannajaa29/SoalShift_modul2_F02/blob/master/soal1/soal1%20sudah%20grey.png" width="600">
+	
 *	Untuk mengakiri program dapat dilakukan perintah `kill [PID]`
 *	Untuk mendapatkan PID dapat dilakukan perintah `ps -e | grep nama`
 	
